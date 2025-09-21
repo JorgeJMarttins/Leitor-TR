@@ -56,10 +56,10 @@ app.post("/upload-text", async (req, res) => {
   const partes = dividirTexto(texto, LIMITE);
 
   try {
-    for (let parte of partes) {
+    for (let i = 0; i < partes.length; i++) {
       const { error } = await supabase
         .from(tabela)
-        .insert([{ status: false, Trecho: parte }]);
+        .insert([{ status: i === 0, Trecho: partes[i] }]); // ✅ primeiro trecho true, resto false
       if (error) throw error;
     }
 
