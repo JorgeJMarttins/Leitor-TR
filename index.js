@@ -17,12 +17,30 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 // 🔹 Limite de caracteres por trecho
 const LIMITE = 500;
 
-// 🔹 Função para dividir texto em partes
+// 🔹 Função para dividir texto sem cortar palavras
 function dividirTexto(texto, limite) {
   let partes = [];
-  for (let i = 0; i < texto.length; i += limite) {
-    partes.push(texto.slice(i, i + limite));
+  let inicio = 0;
+
+  while (inicio < texto.length) {
+    let fim = inicio + limite;
+    if (fim >= texto.length) {
+      partes.push(texto.slice(inicio));
+      break;
+    }
+
+    let trecho = texto.slice(inicio, fim);
+    let ultimoEspaco = trecho.lastIndexOf(" ");
+
+    if (ultimoEspaco === -1) {
+      // Palavra maior que limite, corta no limite mesmo
+      ultimoEspaco = limite;
+    }
+
+    partes.push(texto.slice(inicio, inicio + ultimoEspaco));
+    inicio += ultimoEspaco + 1; // pula o espaço
   }
+
   return partes;
 }
 
